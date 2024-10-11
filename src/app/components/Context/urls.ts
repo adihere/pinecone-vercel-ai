@@ -32,5 +32,11 @@ https://schubmat.github.io/DecisionCapture/templates/captureTemplate_simple.html
 https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html
 https://www.ozimmer.ch/practices/2020/05/22/ADDefinitionOfDone.html
 https://www.ozimmer.ch/practices/2023/04/05/ADRReview.html
+https://www.ozimmer.ch/practices/2023/04/21/ADAdoptionModel.html
+https://openpracticelibrary.com/practice/architectural-decision-records-adr/
+https://www.ost.ch/de/forschung-und-dienstleistungen/informatik/ifs-institut-fuer-software/labs/cloud-application-lab/architectural-knowledge-management-akm
+https://socadk.github.io/design-practice-repository/
+https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions.html/
+
 
 */
