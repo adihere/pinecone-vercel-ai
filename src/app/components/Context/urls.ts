@@ -16,3 +16,21 @@ export const urls = [{
   seeded: false,
   loading: false,
 }]
+
+
+/*
+ future additions
+https://adr.github.io/
+https://www.ozimmer.ch/practices/2023/04/03/ADRCreation.html
+https://ieeexplore.ieee.org/document/9801811
+https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/locales/en/templates/decision-record-template-by-michael-nygard/index.md
+https://www.thoughtworks.com/en-us/radar/techniques/lightweight-architecture-decision-records
+https://www.infoq.com/articles/sustainable-architectural-design-decisions/
+https://github.com/joelparkerhenderson/architecture_decision_record
+https://schubmat.github.io/DecisionCapture/
+https://schubmat.github.io/DecisionCapture/templates/captureTemplate_simple.html
+https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html
+https://www.ozimmer.ch/practices/2020/05/22/ADDefinitionOfDone.html
+https://www.ozimmer.ch/practices/2023/04/05/ADRReview.html
+
+*/
