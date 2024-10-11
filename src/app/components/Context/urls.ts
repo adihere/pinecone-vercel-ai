@@ -1,18 +1,18 @@
 export const urls = [{
-  url: "https://e360.yale.edu/digest/indonesia-malaysia-deforestation",
-  title: "Indonesia Deforestation",
+  url: "https://www.opengroup.org/architecture/togaf8/",
+  title: "TOGAF Architecture Methodology",
   seeded: false,
   loading: false,
 },
 {
-  url: "https://cleantechnica.com/2023/06/29/solar-82-of-power-capacity-growth-in-india-in-2022/",
-  title: "Solar Power in India",
+  url: "https://github.com/joelparkerhenderson/architecture-decision-record",
+  title: "Architecture Decision Records - Guidelines",
   seeded: false,
   loading: false,
 },
 {
-  url: "https://www.cbssports.com/nba/news/matisse-thybulle-to-stay-with-blazers-who-match-mavericks-three-year-33-million-deal-per-report/",
-  title: "Matisee Thybulle",
+  url: "https://ieeexplore.ieee.org/document/875998/figures#figures",
+  title: " IEEE Recommended Practice for Architectural Description for Software-Intensive Systems",
   seeded: false,
   loading: false,
 }]
