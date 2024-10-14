@@ -1,4 +1,5 @@
-A pincecone and vercel based Pdf answer engine for a specific  topic 
+A pincecone and vercel based  answer engine for guidance on Architecture Decision Records 
+
 
 
 ############Original Instructions  from the cloned template########
