@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState, FormEvent } from "react";
-import { Context } from "@/components/Context";
-import Header from "@/components/Header";
-import Chat from "@/components/Chat";
+import { Context } from "./components/Context";
+import Header from "./components/Header";
+import Chat from "./components/Chat";
 import { useChat } from "ai/react";
 import InstructionModal from "./components/InstructionModal";
 import { AiFillGithub, AiOutlineInfoCircle } from "react-icons/ai";
+import Link from 'next/link';
 
 const Page: React.FC = () => {
   const [gotMessages, setGotMessages] = useState(false);
@@ -96,6 +97,10 @@ const Page: React.FC = () => {
           ☰
         </button>
       </div>
+
+      <Link href="/validate" className="fixed right-20 top-4 md:right-20 md:top-6 text-xl text-white">
+        Validate your ADR
+      </Link>
     </div>
   );
 };
