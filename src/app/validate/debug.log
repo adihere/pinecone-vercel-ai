@@ -1,0 +1,10 @@
+2024-10-19T16:38:02.027Z: Response status: 400
+2024-10-19T16:38:02.193Z: Response data: {"error":"Invalid or empty messages array"}
+2024-10-19T16:38:02.645Z: Response status: 400
+2024-10-19T16:38:02.762Z: Response data: {"error":"Invalid or empty messages array"}
+2024-10-19T17:17:02.345Z: Response status: 400
+2024-10-19T17:17:02.452Z: Response data: {"error":"Invalid or empty messages array"}
+2024-10-19T17:28:27.756Z: Response status: 400
+2024-10-19T17:28:27.877Z: Response data: {"error":"Invalid or empty messages array"}
+2024-10-20T12:20:54.366Z: Response status: 500
+2024-10-20T12:20:54.457Z: Error validating text: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON

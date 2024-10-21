@@ -1,6 +1,6 @@
 
 import { Message } from 'ai'
-import { getContext } from '@/utils/context'
+import { getContext } from '../../utils/context'
 import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
