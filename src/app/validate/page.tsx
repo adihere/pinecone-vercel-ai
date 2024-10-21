@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import Link from 'next/link';
-import ValidateForm from './ValidateForm';
+import ValidateForm from '@/app/components/ADRvalidate/ValidateForm';
 
 export default function ValidatePage() {
   return (
