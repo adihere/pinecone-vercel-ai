@@ -7,6 +7,9 @@ const ValidateFormClient: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
 
   const handleValidate = async () => {
+    console.log('Input text before fetch:', inputText);
+    console.log('Input text length:', inputText.length);
+    
     try {
       const response = await fetch('/api/validate', {
         method: 'POST',
@@ -17,6 +20,8 @@ const ValidateFormClient: React.FC = () => {
       });
       
       const data = await response.json();
+      console.log('Response data:', data);  // New console log
+      
       setResult(data.result);
     } catch (error) {
       console.error('Error validating text:', error);
@@ -29,7 +34,7 @@ const ValidateFormClient: React.FC = () => {
       <textarea
         className="w-full max-w-full h-80 p-4 mb-4 bg-gray-700 text-white rounded"
         value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
+        onChange={(changeEvent) => setInputText(changeEvent.target.value)}
         placeholder="Enter ADR text to validate..."
       />
       <button
