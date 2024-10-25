@@ -20,7 +20,7 @@ const ValidateFormClient: React.FC = () => {
       });
       
       const data = await response.json();
-      console.log('Response data:', data);  // New console log
+      console.log('Response data FROM fORM:', data);  // New console log
       
       setResult(data.result);
     } catch (error) {

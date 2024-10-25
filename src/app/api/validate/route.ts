@@ -11,7 +11,7 @@ export const runtime = 'edge'
 export async function POST(req: Request) {
   try {
     const { text: inputText } = await req.json()    
-    console.log("message from route ts", inputText);    
+    console.log("message from route ts -INPUT", inputText);    
     
     /*
     if (!Array.isArray(messages) || messages.length === 0) {
@@ -53,12 +53,14 @@ export async function POST(req: Request) {
     ]
 
     const systemPre = "You are an expert ADR validator. You will be given a context block and you will need to validate the ADR based on the context block. Provide structural feedback in bullet points and sub-headings. START OF CONTEXT ";
-    
+    const systemPost = "END OF CONTEXT.  Do not return special characters or markdown formatting.  Just return the text ";
+
     const { text: generatedText } = await generateText({
       model: openai("gpt-4o"),
-      prompt: systemPre + messageString + "END OF CONTEXT ",
+      prompt: systemPre + messageString +systemPost,
     });
 
+    console.log("message from route ts - RESPONSE", generatedText);    
 
     return new Response(generatedText);
   } catch (e) {
