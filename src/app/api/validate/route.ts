@@ -10,8 +10,8 @@ export const runtime = 'edge'
 
 export async function POST(req: Request) {
   try {
-    const  message = await req.text()    
-    console.log("message from route ts", message);    
+    const { text: inputText } = await req.json()    
+    console.log("message from route ts", inputText);    
     
     /*
     if (!Array.isArray(messages) || messages.length === 0) {
@@ -23,9 +23,9 @@ export async function POST(req: Request) {
 
     let messageString: string;
     // Ensure message is a string
-    messageString = typeof message === 'string' ? message : JSON.stringify(message);  
+    messageString = typeof inputText === 'string' ? inputText : JSON.stringify(inputText);  
     // debug
-    const tempMessageDebug = "ADR 001: Replace RabbitMQ with Kafka Context: Currently, our messaging system uses RabbitMQ for queue management. While RabbitMQ has served us well, we have encountered several issues with scalability, throughput, and maintenance complexity. With increasing demand for real-time data processing and larger message volumes, an alternative solution is needed. Decision: We will replace RabbitMQ with Apache Kafka as our primary message queue system. Rationale: Scalability: Kafka's partitioned log model allows for horizontal scaling with ease, handling higher loads without significant performance drops. Throughput: Kafka's architecture supports higher message throughput, making it more suitable for our growing data volume and real-time processing needs. Durability: Kafka's replicated logs ensure data is durable and fault-tolerant, reducing the risk of data loss. Consequences:Migration Effort: Transitioning to Kafka will require significant changes to our messaging system, including updates to message producers, consumers, and monitoring systems. Infrastructure Costs: Initial setup and operation of Kafka clusters could increase infrastructure costs due to resource requirements. Status: Approved Date: 15 October 2024";
+    //const tempMessageDebug = "ADR 001: Replace RabbitMQ with Kafka Context: Currently, our messaging system uses RabbitMQ for queue management. While RabbitMQ has served us well, we have encountered several issues with scalability, throughput, and maintenance complexity. With increasing demand for real-time data processing and larger message volumes, an alternative solution is needed. Decision: We will replace RabbitMQ with Apache Kafka as our primary message queue system. Rationale: Scalability: Kafka's partitioned log model allows for horizontal scaling with ease, handling higher loads without significant performance drops. Throughput: Kafka's architecture supports higher message throughput, making it more suitable for our growing data volume and real-time processing needs. Durability: Kafka's replicated logs ensure data is durable and fault-tolerant, reducing the risk of data loss. Consequences:Migration Effort: Transitioning to Kafka will require significant changes to our messaging system, including updates to message producers, consumers, and monitoring systems. Infrastructure Costs: Initial setup and operation of Kafka clusters could increase infrastructure costs due to resource requirements. Status: Approved Date: 15 October 2024";
     ///end of debug
 
     // Get the context from the message    
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       AI has the sum of all knowledge in their brain, and is able to accurately answer nearly any question about any topic in conversation.
       AI assistant is a big fan of Pinecone and Vercel.
       START CONTEXT BLOCK
-      ${tempMessageDebug}
+      ${messageString}
       END OF CONTEXT BLOCK
       AI assistant will take into account any CONTEXT BLOCK that is provided in a conversation.
       If the context does not provide the answer to question, the AI assistant will say, "I'm sorry, but I don't know the answer to that question".
@@ -51,13 +51,16 @@ export async function POST(req: Request) {
       `,
       },
     ]
+
+    const systemPre = "You are an expert ADR validator. You will be given a context block and you will need to validate the ADR based on the context block. Provide structural feedback in bullet points and sub-headings. START OF CONTEXT ";
     
-    const { text } = await generateText({
+    const { text: generatedText } = await generateText({
       model: openai("gpt-4o"),
-      prompt: tempMessageDebug,
+      prompt: systemPre + messageString + "END OF CONTEXT ",
     });
 
-    return new Response(text);
+
+    return new Response(generatedText);
   } catch (e) {
     throw (e)
   }
