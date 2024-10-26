@@ -8,6 +8,12 @@ import { streamText } from 'ai';
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge'
 
+function textToJSON(text: string) {
+  return {
+    text: text
+  };
+}
+
 export async function POST(req: Request) {
   try {
     const { text: inputText } = await req.json()    
@@ -57,14 +63,19 @@ export async function POST(req: Request) {
 
     const { text: generatedText } = await generateText({
       model: openai("gpt-4o"),
-      prompt: systemPre + messageString +systemPost,
+      prompt: systemPre + messageString + systemPost,
     });
 
     console.log("message from route ts - RESPONSE", generatedText);    
 
-    return new Response(generatedText);
+    return new Response(JSON.stringify(textToJSON(generatedText)), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    
   } catch (e) {
-    throw (e)
+    return new Response(JSON.stringify({ error: (e as Error).message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-
 }

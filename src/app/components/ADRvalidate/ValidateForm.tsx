@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 
+
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
@@ -20,9 +21,11 @@ const ValidateFormClient: React.FC = () => {
       });
       
       const data = await response.json();
-      console.log('Response data FROM fORM:', data);  // New console log
       
-      setResult(data.result);
+      // validate the JSON
+      console.log('Response data FROM fORM:', data);  // New console log
+
+      setResult(data.text);
     } catch (error) {
       console.error('Error validating text:', error);
       setResult('An error occurred during validation.');
