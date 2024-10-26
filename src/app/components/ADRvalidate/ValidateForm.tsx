@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+// Import statement removed as it's causing issues
+// import 'react-quill/dist/quill.snow.css';
 
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
@@ -34,11 +38,21 @@ const ValidateFormClient: React.FC = () => {
 
   return (
     <>
-      <textarea
-        className="w-full max-w-full h-80 p-4 mb-4 bg-gray-700 text-white rounded"
+      <ReactQuill
+        theme="snow"
         value={inputText}
-        onChange={(changeEvent) => setInputText(changeEvent.target.value)}
+        onChange={setInputText}
         placeholder="Enter ADR text to validate..."
+        className="mb-4 bg-gray-700 text-white rounded"
+        modules={{
+          toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{'list': 'ordered'}, {'list': 'bullet'}],
+            ['link', 'image'],
+            ['clean']
+          ],
+        }}
       />
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
