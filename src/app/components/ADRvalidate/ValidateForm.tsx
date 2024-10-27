@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-// Import statement removed as it's causing issues
-// import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.snow.css';
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import('react-quill'), { 
+  ssr: false,
+  loading: () => <div className="h-[45vh] w-[90vw] bg-gray-700 rounded animate-pulse" />
+});
 
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
@@ -14,7 +16,7 @@ const ValidateFormClient: React.FC = () => {
   const handleValidate = async () => {
     console.log('Input text before fetch:', inputText);
     console.log('Input text length:', inputText.length);
-    
+
     try {
       const response = await fetch('/api/validate', {
         method: 'POST',
@@ -23,12 +25,9 @@ const ValidateFormClient: React.FC = () => {
         },
         body: JSON.stringify({ text: inputText }),
       });
-      
-      const data = await response.json();
-      
-      // validate the JSON
-      console.log('Response data FROM fORM:', data);  // New console log
 
+      const data = await response.json();
+      console.log('Response data FROM fORM:', data);
       setResult(data.text);
     } catch (error) {
       console.error('Error validating text:', error);
@@ -37,36 +36,54 @@ const ValidateFormClient: React.FC = () => {
   };
 
   return (
-    <>
-      <ReactQuill
-        theme="snow"
-        value={inputText}
-        onChange={setInputText}
-        placeholder="Enter ADR text to validate..."
-        className="mb-4 bg-gray-700 text-white rounded"
-        modules={{
-          toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{'list': 'ordered'}, {'list': 'bullet'}],
-            ['link', 'image'],
-            ['clean']
-          ],
-        }}
-      />
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={handleValidate}
-      >
-        Validate
-      </button>
+    <div className="w-full max-w-[90vw] mx-auto space-y-6">
+      {/* Editor Container */}
+      <div className="relative">
+        <ReactQuill
+          theme="snow"
+          value={inputText}
+          onChange={setInputText}
+          placeholder="Enter ADR text to validate..."
+          className="bg-white rounded" 
+          modules={{
+            toolbar: [
+              [{ header: [1, 2, 3, false] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['link', 'image'],
+              ['clean']
+            ],
+          }}
+          formats={[
+            'header',
+            'bold', 'italic', 'underline', 'strike',
+            'list', 'bullet',
+            'link', 'image'
+          ]}
+          style={{
+            height: '45vh',
+          }}
+        />
+      </div>
+
+      {/* Validate Button - Now in its own container with clear spacing */}
+      <div className="flex justify-center py-4">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-105"
+          onClick={handleValidate}
+        >
+          Validate
+        </button>
+      </div>
+      
+      {/* Results Section */}
       {result && (
-        <div className="mt-4 p-4 bg-gray-700 text-white rounded max-w-full w-full">
-          <h2 className="text-xl font-bold mb-2">Validation Result:</h2>
-          <p>{result}</p>
+        <div className="mt-4 p-6 bg-gray-700 text-white rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold mb-3">Validation Result:</h2>
+          <p className="whitespace-pre-wrap">{result}</p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
