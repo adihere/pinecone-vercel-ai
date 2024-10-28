@@ -36,6 +36,8 @@ export async function POST(req: Request) {
 
     // Get the context from the message    
     //const context = await getContext(messageString, '')
+    // Get the context from the last message
+    const contextADRFromVector = await getContext(messageString, '')
 
 
     const ADRprompt = [
@@ -63,8 +65,9 @@ export async function POST(req: Request) {
 
     const { text: generatedText } = await generateText({
       model: openai("gpt-4o"),
-      prompt: systemPre + messageString + systemPost,
+      prompt: systemPre + contextADRFromVector + messageString + systemPost,
     });
+
 
     console.log("message from route ts - RESPONSE", generatedText);    
 
