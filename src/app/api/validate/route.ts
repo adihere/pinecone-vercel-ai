@@ -70,6 +70,7 @@ export async function POST(req: Request) {
 
 
     console.log("message from route ts - RESPONSE", generatedText);    
+    console.log("message from route ts - PROMPT", "PRE \n" + systemPre + "contextADRFromVector" + contextADRFromVector + "messageString" + messageString + systemPost);    
 
     return new Response(JSON.stringify(textToJSON(generatedText)), {
       headers: { 'Content-Type': 'application/json' },
