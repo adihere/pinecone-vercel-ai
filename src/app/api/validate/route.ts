@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
 
     console.log("message from route ts - RESPONSE", generatedText);    
-    console.log("message from route ts - Context from Vector DB", ADRInputcontext );    
+    console.log("message from route ts - Context from Vector DB", contextADRFromVector );    
 
     return new Response(JSON.stringify(textToJSON(generatedText)), {
       headers: { 'Content-Type': 'application/json' },
