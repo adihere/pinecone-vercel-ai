@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Architecture Bot ",
-  description: "Pinecone - Vercel GenAI - Architecture Bot ",
+  description: "Experimental Architecture Bot ",
 };
 
 import "../global.css";
