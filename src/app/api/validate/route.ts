@@ -1,34 +1,39 @@
 //import { NextRequest, NextResponse } from 'next/server';
-import { generateText, Message } from 'ai'
-import { getContext } from '../../utils/context'
+import { generateText, Message } from 'ai';
+import { getContext } from '../../utils/context';
 import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
-
-
 // IMPORTANT! Set the runtime to edge
-export const runtime = 'edge'
+export const runtime = 'edge';
+
+const DEBUG = true; // Set this flag to true to enable debug logging
 
 function textToJSON(text: string) {
-  return {
-    text: text
-  };
+  return { text: text };
+}
+
+function debugLog(message: string, data: any = null) {
+  if (DEBUG) {
+    console.log(message);
+    if (data !== null) {
+      console.log(JSON.stringify(data, null, 2));
+    }
+    // Add file logging logic here if needed
+  }
 }
 
 export async function POST(req: Request) {
   try {
-    const { text: inputText } = await req.json()    
-    console.log("message from route ts -INPUT", inputText);    
-    
+    const { text: inputText } = await req.json();
+    debugLog("message from route ts - INPUT", inputText);
 
     let messageString: string;
     // Ensure message is a string
-    messageString = typeof inputText === 'string' ? inputText : JSON.stringify(inputText);  
- 
-    // Get the context from the message    
-    //const context = await getContext(messageString, '')
-    // Get the context from the last message
-    const contextADRFromVector = await getContext(messageString, '')
+    messageString = typeof inputText === 'string' ? inputText : JSON.stringify(inputText);
 
+    // Get the context from the last message
+    const contextADRFromVector = await getContext(messageString, '');
+    debugLog("message from route ts - CONTEXT", contextADRFromVector);
 
     const ADRprompt = [
       {
@@ -48,8 +53,7 @@ export async function POST(req: Request) {
       AI assistant will not invent anything that is not drawn directly from the context.
       `,
       },
-    ]
-
+    ];
     const systemPre = "You are an expert enterprise architect with deep knowledge of Architecture Decision Records and its validation. You will be given a context block followed by ADR text and you will need to validate the ADR based on the context block. Provide structural feedback in bullet points and sub-headings. List down the Positive points first followed by Areas of Improvement START OF CONTEXT ";
     const systemPost = "END OF CONTEXT.  Do not return special characters or markdown formatting.  Just return the text ";
 
@@ -57,16 +61,14 @@ export async function POST(req: Request) {
       model: openai("gpt-4o"),
       prompt: systemPre + contextADRFromVector + messageString + systemPost,
     });
-
-
-    console.log("message from route ts - RESPONSE", generatedText);    
-    console.log("message from route ts - PROMPT", "PRE \n" + systemPre + "contextADRFromVector" + contextADRFromVector + "messageString" + messageString + systemPost);    
+    debugLog("message from route ts - RESPONSE", generatedText);
+    debugLog("message from route ts - PROMPT", "PRE \n" + systemPre + "contextADRFromVector" + contextADRFromVector + "messageString" + messageString + systemPost);
 
     return new Response(JSON.stringify(textToJSON(generatedText)), {
       headers: { 'Content-Type': 'application/json' },
     });
-    
   } catch (e) {
+    debugLog("Error in POST handler", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

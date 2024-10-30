@@ -1,8 +1,7 @@
-"use client";
-
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import { Loader } from 'lucide-react';
 
 const ReactQuill = dynamic(() => import('react-quill'), { 
   ssr: false,
@@ -12,10 +11,10 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
 
   const handleValidate = async () => {
-    console.log('Input text before fetch:', inputText);
-    console.log('Input text length:', inputText.length);
+    setIsValidating(true);
 
     try {
       const response = await fetch('/api/validate', {
@@ -27,11 +26,12 @@ const ValidateFormClient: React.FC = () => {
       });
 
       const data = await response.json();
-      console.log('Response data FROM fORM:', data);
       setResult(data.text);
     } catch (error) {
       console.error('Error validating text:', error);
       setResult('An error occurred during validation.');
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -66,13 +66,21 @@ const ValidateFormClient: React.FC = () => {
         />
       </div>
 
-      {/* Validate Button - Now in its own container with clear spacing */}
+      {/* Validate Button */}
       <div className="flex justify-center py-4">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-105"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-105 flex items-center"
           onClick={handleValidate}
+          disabled={isValidating}
         >
-          Validate
+          {isValidating ? (
+            <>
+              <Loader className="mr-2 animate-spin" />
+              Validating...
+            </>
+          ) : (
+            'Validate'
+          )}
         </button>
       </div>
       
