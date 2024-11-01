@@ -1,7 +1,7 @@
 import Image from "next/image";
 //import PineconeLogo from "../../../public/pinecone.svg";
 import Smartways2Logo from "../../../public/smartways2.jpeg";
-import VercelLogo from "../../../public/vercel.svg";
+import VercelLogo from "../../../public/archmemov.jpg";
 
 export default function Header({ className }: { className?: string }) {
   return (

@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
-import { Loader } from 'lucide-react';
+import { Loader, ChevronDown } from 'lucide-react';
 
 const ReactQuill = dynamic(() => import('react-quill'), { 
   ssr: false,
   loading: () => <div className="h-[45vh] w-[90vw] bg-gray-700 rounded animate-pulse" />
 });
 
+
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('empty');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  
   const handleValidate = async () => {
     setIsValidating(true);
 
@@ -36,7 +40,7 @@ const ValidateFormClient: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[90vw] mx-auto space-y-6">
+    <div className="w-full max-w-[90vw] mx-auto space-y-6">     
       {/* Editor Container */}
       <div className="relative">
         <ReactQuill
@@ -69,9 +73,9 @@ const ValidateFormClient: React.FC = () => {
       {/* Validate Button */}
       <div className="flex justify-center py-4">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-105 flex items-center"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-105 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleValidate}
-          disabled={isValidating}
+          disabled={isValidating || !inputText.trim()}
         >
           {isValidating ? (
             <>
