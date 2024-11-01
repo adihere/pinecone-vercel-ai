@@ -8,177 +8,6 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   loading: () => <div className="h-[45vh] w-[90vw] bg-gray-700 rounded animate-pulse" />
 });
 
-const ADR_TEMPLATES = {
-  empty: {
-    name: "Select a template...",
-    content: ""
-  },
-  basic: {
-    name: "Basic ADR Template",
-    content: `# Title: [Brief title of solved problem and solution]
-
-## Status
-[Proposed | Accepted | Deprecated | Superseded]
-If superseded, include a reference to the new ADR
-
-## Context
-[Description of the problem and alternative solutions considered]
-
-## Decision
-[Chosen solution and justification]
-
-## Consequences
-[Positive and negative repercussions of the decision]
-
-## Links
-[Optional: Links to related decisions and resources]`
-  },
-  detailed: {
-    name: "Detailed ADR Template",
-    content: `# Architecture Decision Record (ADR)
-
-## Title: [Descriptive title for the architecture decision]
-
-## Date: [YYYY-MM-DD]
-Last Modified: [YYYY-MM-DD]
-
-## Status
-- [ ] Proposed
-- [ ] Accepted
-- [ ] Deprecated
-- [ ] Superseded by ADR-XXX
-
-## Problem Statement
-[Clear, concise description of the issue that needs to be addressed]
-
-## Context
-### Background
-[Relevant background information and current system state]
-
-### Constraints
-[Technical, business, or organizational constraints affecting the decision]
-
-### Assumptions
-[Key assumptions made during the decision process]
-
-## Options Considered
-### Option 1: [Name]
-- Pros:
-  - [List advantages]
-- Cons:
-  - [List disadvantages]
-- Risks:
-  - [List potential risks]
-
-### Option 2: [Name]
-[Similar structure to Option 1]
-
-## Decision
-### Chosen Option
-[Clearly state which option was selected]
-
-### Justification
-[Detailed explanation of why this option was chosen]
-
-## Implementation
-### Action Items
-- [ ] [List specific tasks needed to implement the decision]
-- [ ] [Include timeline if applicable]
-
-### Success Metrics
-- [Define how success will be measured]
-
-## Consequences
-### Positive
-- [List positive outcomes]
-
-### Negative
-- [List negative outcomes]
-
-### Risks
-- [List ongoing risks and mitigation strategies]
-
-## Related Documents
-- [Links to related ADRs]
-- [Links to related documentation]
-- [References to standards or patterns used]`
-  },
-  microservices: {
-    name: "Microservices ADR Template",
-    content: `# ADR: Microservice Architecture Decision
-
-## Title: [Specific Microservice Component/Pattern Decision]
-
-## Status
-[Current status of the decision]
-
-## Context
-### Current Architecture
-[Description of current system architecture]
-
-### Business Drivers
-- [List key business requirements]
-- [Scale requirements]
-- [Performance needs]
-
-### Technical Requirements
-- [Specific technical requirements]
-- [Integration needs]
-- [Data consistency requirements]
-
-## Decision
-
-### Service Boundaries
-- Service Name:
-- Responsibility:
-- Data Ownership:
-- APIs:
-  - Endpoints:
-  - Protocols:
-  - Data Formats:
-
-### Technical Stack
-- Language/Framework:
-- Database:
-- Message Queue:
-- API Gateway:
-- Service Mesh:
-
-### Patterns Used
-- [Circuit Breaker]
-- [CQRS]
-- [Event Sourcing]
-- [Saga Pattern]
-
-## Consequences
-
-### Operational Impact
-- Deployment:
-- Monitoring:
-- Alerting:
-- SLAs:
-
-### Team Impact
-- Team Structure:
-- Skills Required:
-- Training Needs:
-
-### Cost Implications
-- Infrastructure:
-- Development:
-- Maintenance:
-
-## Implementation Strategy
-- Phase 1:
-- Phase 2:
-- Phase 3:
-
-## Success Criteria
-- [Measurable outcomes]
-- [Performance metrics]
-- [Business metrics]`
-  }
-};
 
 const ValidateFormClient: React.FC = () => {
   const [inputText, setInputText] = useState('');
@@ -187,12 +16,7 @@ const ValidateFormClient: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('empty');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleTemplateSelect = (templateKey: string) => {
-    setSelectedTemplate(templateKey);
-    setInputText(ADR_TEMPLATES[templateKey as keyof typeof ADR_TEMPLATES].content);
-    setIsDropdownOpen(false);
-  };
-
+  
   const handleValidate = async () => {
     setIsValidating(true);
 
@@ -216,32 +40,7 @@ const ValidateFormClient: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[90vw] mx-auto space-y-6">
-      {/* Template Selector */}
-      <div className="relative">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="w-full bg-gray-700 text-white p-3 rounded-lg flex justify-between items-center"
-        >
-          <span>{ADR_TEMPLATES[selectedTemplate as keyof typeof ADR_TEMPLATES].name}</span>
-          <ChevronDown className={`transform transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-        </button>
-        
-        {isDropdownOpen && (
-          <div className="absolute w-full mt-1 bg-gray-700 rounded-lg shadow-lg z-10">
-            {Object.entries(ADR_TEMPLATES).map(([key, template]) => (
-              <button
-                key={key}
-                className="w-full text-left px-4 py-2 text-white hover:bg-gray-600 first:rounded-t-lg last:rounded-b-lg"
-                onClick={() => handleTemplateSelect(key)}
-              >
-                {template.name}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
+    <div className="w-full max-w-[90vw] mx-auto space-y-6">     
       {/* Editor Container */}
       <div className="relative">
         <ReactQuill
