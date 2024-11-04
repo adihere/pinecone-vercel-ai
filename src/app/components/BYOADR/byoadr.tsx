@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from 'react';
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -43,6 +45,7 @@ const SplitViewADRForm: React.FC = () => {
     setChatHistory(prev => [...prev, newUserMessage]);
 
     try {
+      NProgress.start()
       const response = await fetch('/api/create', {
         method: 'POST',
         headers: {
@@ -69,6 +72,7 @@ const SplitViewADRForm: React.FC = () => {
       
       // Fetch and update predicted questions
       await updatePredictedQuestions(inputText);
+      NProgress.done()
       
     } catch (error) {
       console.error('Error creating text:', error);

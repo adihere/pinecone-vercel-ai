@@ -26,13 +26,12 @@ export async function POST(req: NextRequest) {
 Given the following user message:
 ${inputText}
 
-Generate 5 brief, relevant follow-up questions the user might want to ask next. The questions should be concise, open-ended, and encourage the user to explore the topic further.
-
-Q1. 
-Q2.
-Q3.
-Q4.
-Q5.
+Generate 5 brief, relevant follow-up suggestions the user might want to suggest as ways to imrpove the ADR document better. The suggestions should be concise, open-ended, and encourage the user to refine the topic further and make it effective.
+. 
+.
+.
+.
+.
 `;
 
     const { text: predictedQuestions } = await generateText({
