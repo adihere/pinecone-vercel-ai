@@ -99,7 +99,7 @@ const SplitViewADRForm: React.FC = () => {
   };
 
   const handlePredictedQuestionClick = (question: string) => {
-    setInputText(question);
+    setInputText(" Update and refine the previously created  ADR Output based on the info provided here" + question);
     handleSendMessage();
   };
 
@@ -137,7 +137,7 @@ const SplitViewADRForm: React.FC = () => {
               <div className="text-sm text-gray-300 mb-1">
                 {message.role === 'user' ? 'You' : 'Assistant'} • {message.timestamp}
               </div>
-              <div className="text-white whitespace-pre-wrap">{message.content}</div>
+              
             </div>
           ))}
         </div>
