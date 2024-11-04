@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from 'react';
-import { Message } from 'ai';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -8,10 +7,16 @@ interface ChatMessage {
   timestamp: string;
 }
 
+interface PredictedQuestion {
+  question: string;
+  onClick: () => void;
+}
+
 const SplitViewADRForm: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [predictedQuestions, setPredictedQuestions] = useState<PredictedQuestion[]>([]);
 
   const logDebugInfo = async (info: string) => {
     try {
@@ -30,7 +35,6 @@ const SplitViewADRForm: React.FC = () => {
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
-    // Add user message to chat history
     const newUserMessage: ChatMessage = {
       role: 'user',
       content: inputText,
@@ -53,7 +57,6 @@ const SplitViewADRForm: React.FC = () => {
       const data = await response.json();
       await logDebugInfo(`Response data: ${JSON.stringify(data)}`);
       
-      // Add assistant response to chat history
       const assistantMessage: ChatMessage = {
         role: 'assistant',
         content: data.result,
@@ -61,11 +64,11 @@ const SplitViewADRForm: React.FC = () => {
       };
       setChatHistory(prev => [...prev, assistantMessage]);
       
-      // Update the result panel
       setResult(data.result);
-      
-      // Clear input after sending
       setInputText('');
+      
+      // Fetch and update predicted questions
+      await updatePredictedQuestions(inputText);
       
     } catch (error) {
       console.error('Error creating text:', error);
@@ -74,10 +77,52 @@ const SplitViewADRForm: React.FC = () => {
     }
   };
 
+  const updatePredictedQuestions = async (message: string) => {
+    try {
+      const response = await fetch('/api/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: message }),
+      });
+      const data = await response.json();
+      setPredictedQuestions(
+        data.questions.map((q: string) => ({
+          question: q,
+          onClick: () => handlePredictedQuestionClick(q),
+        }))
+      );
+    } catch (error) {
+      console.error('Error fetching predicted questions:', error);
+    }
+  };
+
+  const handlePredictedQuestionClick = (question: string) => {
+    setInputText(question);
+    handleSendMessage();
+  };
+
   return (
     <div className="flex h-[calc(100vh-200px)] gap-4">
       {/* Left side - Chat Interface */}
       <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4">
+        {/* Predicted Questions */}
+        <div className="mb-4">
+          <h3 className="text-lg font-medium text-white mb-2">Suggested Questions:</h3>
+          <div className="space-y-2">
+            {predictedQuestions.map((q, index) => (
+              <button
+                key={index}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full text-left"
+                onClick={q.onClick}
+              >
+                {q.question}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Chat History */}
         <div className="flex-grow overflow-y-auto mb-4 space-y-4">
           {chatHistory.map((message, index) => (
@@ -136,6 +181,8 @@ const SplitViewADRForm: React.FC = () => {
       </div>
     </div>
   );
+
+
 };
 
 export default SplitViewADRForm;
