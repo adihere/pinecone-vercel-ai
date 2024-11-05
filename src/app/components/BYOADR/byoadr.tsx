@@ -113,7 +113,7 @@ const SplitViewADRForm: React.FC = () => {
       <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4">
         {/* Predicted Questions */}
         <div className="mb-4">
-          <h3 className="text-lg font-medium text-white mb-2">Suggested Improvements to your current draft: pick one!</h3>
+          <h3 className="text-lg font-medium text-white mb-2"> Start with a simple english description of your ADR and iterate away !</h3>
           <div className="space-y-2">
             {predictedQuestions.map((q, index) => (
               <button
