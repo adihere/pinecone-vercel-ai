@@ -1,5 +1,5 @@
+// pages/index.tsx
 "use client";
-
 import React, { useEffect, useRef, useState, FormEvent } from "react";
 import { Context } from "./components/Context";
 import Header from "./components/Header";
@@ -100,6 +100,10 @@ const Page: React.FC = () => {
 
       <Link href="/validate" className="fixed right-20 top-4 md:right-20 md:top-6 text-xl text-white">
         Validate your ADR
+      </Link>
+
+      <Link href="/create" className="fixed left-20 top-4 md:left-20 md:top-6 text-xl text-white">
+        Create ADR
       </Link>
     </div>
   );

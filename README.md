@@ -1,4 +1,19 @@
-A pincecone and vercel based  answer engine for guidance on Architecture Decision Records 
+A pincecone and vercel based  answer engine for guidance on Architecture Decision Records and a validation page
+
+
+ValidateFormClient
+
+Overview
+ValidateFormClient is a React component that provides a rich text editor to input ADR text, validates the text by making a POST request to an API, and displays the result.
+
+Features
+Rich Text Editor: Utilizes ReactQuill for a rich text editing experience.
+
+Dynamic Loading: Dynamically loads the editor component to improve initial page load time.
+
+Validation: Sends the input text to an API for validation and displays the result.
+
+Loading Indicator: Shows a spinner while the text is being validated.
 
 
 
@@ -9,7 +24,6 @@ RAG is a powerful tool that combines the benefits of retrieval-based models and 
 
 Incorporating Vercel's AI SDK into our application will allow us easily set up the chatbot workflow and utilize streaming more efficiently, particularly in edge environments, enhancing the responsiveness and performance of our chatbot.
 
-By the end of this tutorial, you'll have a context-aware chatbot that provides accurate responses without hallucination, ensuring a more effective and engaging user experience. Let's get started on building this powerful tool ([Full code listing](https://github.com/pinecone-io/pinecone-vercel-example/blob/main/package.json)).
 
 ## Step 1: Setting Up Your Next.js Application
 
