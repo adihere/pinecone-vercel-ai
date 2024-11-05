@@ -97,14 +97,14 @@ const Page: React.FC = () => {
           ☰
         </button>
       </div>
-
-      <Link href="/validate" className="fixed right-20 top-4 md:right-20 md:top-6 text-xl text-white">
-        Validate your ADR
+      
+      <Link href="/validate" className="fixed right-20 top-4 md:right-30 md:top-6 text-xl text-white bg-gradient-to-r from-blue-200 to-blue-700 rounded-md px-2 py-1">
+      Validate your ADR
       </Link>
 
-      <Link href="/create" className="fixed left-20 top-4 md:left-20 md:top-6 text-xl text-white">
-        Create ADR
-      </Link>
+<Link href="/create" className="fixed left-30 top-32 md:left-40 md:top-6 text-xl text-white bg-gradient-to-r from-green-200 to-green-700 rounded-md px-2 py-1">
+  Create ADR
+</Link>
     </div>
   );
 };
