@@ -1,22 +1,5 @@
 A pincecone and vercel based  answer engine for guidance on Architecture Decision Records and a validation page
 
-
-ValidateFormClient
-
-Overview
-ValidateFormClient is a React component that provides a rich text editor to input ADR text, validates the text by making a POST request to an API, and displays the result.
-
-Features
-Rich Text Editor: Utilizes ReactQuill for a rich text editing experience.
-
-Dynamic Loading: Dynamically loads the editor component to improve initial page load time.
-
-Validation: Sends the input text to an API for validation and displays the result.
-
-Loading Indicator: Shows a spinner while the text is being validated.
-
-
-
 ############Original Instructions  from the cloned template########
 In this example, we'll build a full-stack application that uses Retrieval Augmented Generation (RAG) powered by [Pinecone](https://pinecone.io) to deliver accurate and contextually relevant responses in a chatbot.
 
