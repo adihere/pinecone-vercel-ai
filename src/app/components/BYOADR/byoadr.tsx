@@ -19,6 +19,7 @@ const SplitViewADRForm: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [predictedQuestions, setPredictedQuestions] = useState<PredictedQuestion[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const logDebugInfo = async (info: string) => {
     try {
@@ -35,7 +36,7 @@ const SplitViewADRForm: React.FC = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isProcessing) return;
 
     const newUserMessage: ChatMessage = {
       role: 'user',
@@ -43,10 +44,15 @@ const SplitViewADRForm: React.FC = () => {
       timestamp: new Date().toLocaleTimeString(),
     };
     setChatHistory(prev => [...prev, newUserMessage]);
+    setIsProcessing(true);
+
+    const MOCK_FLAG = false; 
+    const API_ENDPOINT = MOCK_FLAG ? 'mock/createadr' : '/api/createadr';
 
     try {
-      NProgress.start()
-      const response = await fetch('/api/create', {
+      NProgress.start();
+      setIsProcessing(true);
+      const response = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,13 +78,16 @@ const SplitViewADRForm: React.FC = () => {
       
       // Fetch and update predicted questions
       await updatePredictedQuestions(inputText);
-      NProgress.done()
+      setIsProcessing(false);
+      NProgress.done();
       
     } catch (error) {
       console.error('Error creating text:', error);
       await logDebugInfo(`Error creating text: ${error}`);
       setResult('An error occurred during creation.');
     }
+    // Button re-enabled here  
+    finally { setIsProcessing(false);  NProgress.done(); };
   };
 
   const updatePredictedQuestions = async (message: string) => {
@@ -100,10 +109,11 @@ const SplitViewADRForm: React.FC = () => {
     } catch (error) {
       console.error('Error fetching predicted questions:', error);
     }
+    finally { setIsProcessing(false);  NProgress.done(); };
   };
 
   const handlePredictedQuestionClick = (question: string) => {
-    setInputText(" Update and refine the previously created  ADR Output based on the info provided here" + question);
+    setInputText(" Update and refine the previously created  ADR Output based on the info provided here.  " + question);
     handleSendMessage();
   };
 
