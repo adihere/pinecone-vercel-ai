@@ -1,5 +1,4 @@
 import Image from "next/image";
-//import PineconeLogo from "../../../public/pinecone.svg";
 import Smartways2Logo from "../../../public/smartways2.jpeg";
 import VercelLogo from "../../../public/archmemov.jpg";
 
