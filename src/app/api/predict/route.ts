@@ -7,6 +7,10 @@ import { openai } from '@ai-sdk/openai';
 export const runtime = 'edge';
 
 const DEBUG = true;
+const MOCK_FLAG = true; // Set this flag to true to use Mockoon mock API
+
+// Define the API endpoint based on the mock flag
+const API_ENDPOINT = MOCK_FLAG ? 'http://localhost:3004/mock/predict' : '/api/predict';
 
 function debugLog(message: string, data: any = null) {
   if (DEBUG) {
@@ -26,24 +30,29 @@ export async function POST(req: NextRequest) {
 Given the following user message:
 ${inputText}
 
-Generate 5 brief, relevant follow-up suggestions the user might want to suggest as ways to imrpove the ADR document better. The suggestions should be concise, open-ended, and encourage the user to refine the topic further and make it effective.
-. 
-.
-.
-.
-.
-`;
+Generate 5 brief, relevant follow-up suggestions the user might want to suggest as ways to improve the ADR document better. The suggestions should be concise, open-ended, and encourage the user to refine the topic further and make it effective.`;
 
-    const { text: predictedQuestions } = await generateText({
-      model: openai("gpt-3.5-turbo"),
-      prompt: predictPrompt,
-      maxTokens: 250,
-      temperature: 0.7,
-    });
+    // Conditionally fetch from the mock API endpoint or the actual OpenAI API
+    const response = MOCK_FLAG ? 
+      await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: inputText }),
+      }) :
+      await generateText({
+        model: openai("gpt-3.5-turbo"),
+        prompt: predictPrompt,
+        maxTokens: 250,
+        temperature: 0.7,
+      });
+
+    const predictedQuestions = await { text: response.text };
 
     debugLog("Predict Follow-up API - Predicted Questions", predictedQuestions);
 
-    return new Response(JSON.stringify({ questions: predictedQuestions.split('\n').slice(1, 6) }), {
+    return new Response(JSON.stringify({ questions: predictedQuestions}), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {

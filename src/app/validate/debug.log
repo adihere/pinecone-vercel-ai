@@ -76,3 +76,9 @@
 2024-11-08T12:00:07.845Z: Response data: {"result":"Mock ADR creation response"}
 2024-11-08T12:00:31.439Z: Response status: 200
 2024-11-08T12:00:31.597Z: Response data: {"result":"Mock ADR creation response"}
+2024-11-08T15:13:24.528Z: Response status: 200
+2024-11-08T15:13:24.695Z: Response data: {"result":"Mock ADR creation response from mockoon "}
+2024-11-08T17:02:31.805Z: Response status: 200
+2024-11-08T17:02:31.991Z: Response data: {"result":"Mock ADR creation response from mockoon "}
+2024-11-08T17:03:55.320Z: Response status: 200
+2024-11-08T17:03:55.501Z: Response data: {"result":"Mock ADR creation response from mockoon "}
