@@ -46,8 +46,8 @@ const SplitViewADRForm: React.FC = () => {
     setChatHistory(prev => [...prev, newUserMessage]);
     setIsProcessing(true);
 
-    const MOCK_FLAG = false; 
-    const API_ENDPOINT = MOCK_FLAG ? 'mock/createadr' : '/api/createadr';
+    const MOCK_FLAG = true;     
+    const API_ENDPOINT = MOCK_FLAG ? 'http://localhost:3004/mock/createadr' : '/api/createadr'
 
     try {
       NProgress.start();

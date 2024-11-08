@@ -66,3 +66,13 @@
 2024-11-07T20:31:51.236Z: Error creating text: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
 2024-11-08T11:13:11.509Z: Response status: 404
 2024-11-08T11:13:11.560Z: Error creating text: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+2024-11-08T11:29:30.025Z: Response status: 404
+2024-11-08T11:29:30.180Z: Error creating text: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+2024-11-08T11:33:30.998Z: Response status: 200
+2024-11-08T11:33:31.151Z: Response data: "# Title\n[Short title of solved problem and solution]\n\n## Status\nProposed\n\n## Context\nDescription of the problem and context\n\n## Decision\nDescription of the response to these forces\n\n## Consequences\nDescription of the resulting context\n\n## References\nOptional list of references"
+2024-11-08T11:50:00.866Z: Response status: 200
+2024-11-08T11:50:07.575Z: Response data: {"result":"Mock ADR creation response"}
+2024-11-08T12:00:07.661Z: Response status: 200
+2024-11-08T12:00:07.845Z: Response data: {"result":"Mock ADR creation response"}
+2024-11-08T12:00:31.439Z: Response status: 200
+2024-11-08T12:00:31.597Z: Response data: {"result":"Mock ADR creation response"}
