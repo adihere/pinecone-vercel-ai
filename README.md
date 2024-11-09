@@ -1,7 +1,7 @@
-Overview
+**Overview**
 A modern web application for creating, validating, and managing Architecture Decision Records (ADRs) powered by AI.
 
-Table of Contents
+**Table of Contents**
 
 Environment Configuration
 Getting Started
@@ -15,7 +15,7 @@ Troubleshooting
 License
 
 
-Geeting Started 
+**Geeting Started **
 
 Deployment Instructions
 This project is optimized for deployment on Vercel. To deploy your own instance, start by cloning the repository to your local machine. Then, connect your GitHub repository to Vercel through their dashboard. The project includes a convenient "Deploy with Vercel" button that automates this process. When deploying, Vercel will automatically detect the Next.js configuration. Make sure to add all the environment variables from your .env file to your Vercel project settings. The deployment process will handle the build and give you a production URL. For local development, run npm install to install dependencies and npm run dev to start the development server.
