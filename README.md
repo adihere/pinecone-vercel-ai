@@ -1,6 +1,8 @@
 **Overview**
 A modern web application for creating, validating, and managing Architecture Decision Records (ADRs) powered by AI.
 
+
+
 **Table of Contents**
 
 Environment Configuration
@@ -24,6 +26,8 @@ Troubleshooting
 License
 
 
+
+
 **Getting Started**
 
 **Deployment Instructions**
@@ -38,66 +42,58 @@ To run this application, you'll need to set up your environment variables in the
 
 **Core Features**
 
-ADR Creation 
+
+**ADR Creation **
 The Architecture Decision Record (ADR) creation feature provides a structured approach to documenting architectural decisions. The system leverages GPT-4 to assist in creating well-formatted ADRs following industry best practices. The creation process is handled through a dedicated /create route, where users can input their architectural decision details. The system uses a context-aware approach, maintaining relevant information through vector embeddings stored in Pinecone. The AI assistant helps ensure that the ADR includes all essential components such as context, decision, consequences, and status, while maintaining consistency with existing architectural documentation.
 
-ADR Validation 
+**ADR Validation **
 The validation functionality provides automated assessment of ADRs to ensure quality and completeness. When users submit an ADR for validation through the /validate endpoint, the system performs a comprehensive analysis using an AI model that acts as an expert enterprise architect. The validation process examines the ADR's structure, content, and alignment with best practices. The system provides feedback in a structured format, including both positive aspects and areas for improvement. The validation leverages context from the vector database to ensure consistency with existing architectural decisions and organizational standards.
 
 
-Predictive Improvements System
+**Predictive Improvements System**
 The system includes an intelligent suggestion engine that generates follow-up improvements for ADRs. Using the /api/predict endpoint, it analyzes the current state of an ADR and generates five relevant suggestions for refinement. These predictions are powered by GPT-3.5-turbo and are designed to be concise and actionable. The suggestions focus on ways to enhance the ADR's effectiveness, completeness, and clarity. The system uses a temperature setting of 0.7 to ensure a good balance between creativity and relevance in the suggestions. This feature helps teams iteratively improve their architectural documentation through AI-guided recommendations.
 
 
-Tech Stack
 
+**Tech Stack**
 Frontend: Next.js 14, React, Tailwind CSS
+
 AI Integration: OpenAI GPT-4, GPT-3.5-Turbo
+
 Vector Database: Pinecone
+
 Deployment: Vercel Edge Runtime
+
 Icons: React Icons
+
 State Management: React Hooks
+
 UI Components: Custom components with Tailwind
 
-
-
-ValidateFormClient
-
-Overview
-ValidateFormClient is a React component that provides a rich text editor to input ADR text, validates the text by making a POST request to an API, and displays the result.
-
-Features
 Rich Text Editor: Utilizes ReactQuill for a rich text editing experience.
 
-Dynamic Loading: Dynamically loads the editor component to improve initial page load time.
-
-Validation: Sends the input text to an API for validation and displays the result.
-
-Loading Indicator: Shows a spinner while the text is being validated.
 
 
-Troubleshooting
+**Troubleshooting**
+
 Common issues and their solutions:
 
 API Keys Not Working
-
 Ensure all environment variables are properly set
 Check Pinecone console for correct credentials
 Verify OpenAI API key has sufficient credits
 
-
 Deployment Issues
-
 Verify all environment variables are set in Vercel
 Check build logs for any dependency issues
 Ensure Edge runtime compatibility
 
 
-
-License
+**License**
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-############Original Instructions  from the cloned vercel-pineconde template########
+
+**############Original Instructions  from the cloned vercel-pineconde template########**
 In this example, we'll build a full-stack application that uses Retrieval Augmented Generation (RAG) powered by [Pinecone](https://pinecone.io) to deliver accurate and contextually relevant responses in a chatbot.
 
 RAG is a powerful tool that combines the benefits of retrieval-based models and generative models. Unlike traditional chatbots that can struggle with maintaining up-to-date information or accessing domain-specific knowledge, a RAG-based chatbot uses a knowledge base created from crawled URLs to provide contextually relevant responses.
