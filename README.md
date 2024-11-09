@@ -4,28 +4,39 @@ A modern web application for creating, validating, and managing Architecture Dec
 **Table of Contents**
 
 Environment Configuration
+
 Getting Started
+
 Deployment Instructions
+
 Core Features
+
 Technical Architecture
+
 API Reference
+
 Contributing
+
 Tech Stack
+
 Troubleshooting
+
 License
 
 
-**##Getting Started**
+**Getting Started**
 
-Deployment Instructions
+**Deployment Instructions**
+
 This project is optimized for deployment on Vercel. To deploy your own instance, start by cloning the repository to your local machine. Then, connect your GitHub repository to Vercel through their dashboard. The project includes a convenient "Deploy with Vercel" button that automates this process. When deploying, Vercel will automatically detect the Next.js configuration. Make sure to add all the environment variables from your .env file to your Vercel project settings. The deployment process will handle the build and give you a production URL. For local development, run npm install to install dependencies and npm run dev to start the development server.
 
 
-Environment Configuration
+**Environment Configuration**
+
 To run this application, you'll need to set up your environment variables in the .env file. Copy the .env.example file to create your own .env file and fill in the required credentials. You'll need an OpenAI API key for the AI functionalities. For the vector database operations, you'll need Pinecone credentials including the API key, cloud environment, region, and index name. These can be obtained from the Pinecone Console - navigate to API Keys under your Project for the API key, and to Indexes for the index name. Ensure all fields are properly filled as they are essential for both development and production environments.
 
 
-Core Features
+**Core Features**
 
 ADR Creation 
 The Architecture Decision Record (ADR) creation feature provides a structured approach to documenting architectural decisions. The system leverages GPT-4 to assist in creating well-formatted ADRs following industry best practices. The creation process is handled through a dedicated /create route, where users can input their architectural decision details. The system uses a context-aware approach, maintaining relevant information through vector embeddings stored in Pinecone. The AI assistant helps ensure that the ADR includes all essential components such as context, decision, consequences, and status, while maintaining consistency with existing architectural documentation.
