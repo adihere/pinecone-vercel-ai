@@ -3,11 +3,10 @@ A modern web application for creating, validating, and managing Architecture Dec
 
 
 
-**Table of Contents**
-
-Environment Configuration
+**Contents**
 
 Getting Started
+Environment Configuration
 
 Deployment Instructions
 
@@ -24,9 +23,6 @@ Tech Stack
 Troubleshooting
 
 License
-
-
-
 
 **Getting Started**
 
