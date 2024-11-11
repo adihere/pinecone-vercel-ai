@@ -1,7 +1,7 @@
 **Overview**
 A modern web application for creating, validating, and managing Architecture Decision Records (ADRs) powered by AI.
 
-<video src='https://www.youtube.com/watch?v=8I81eilWTBA' width=180/>
+<video src='https://www.youtube.com/watch?v=8I81eilWTBA' width=180/> </video>
 
 **Contents**
 
