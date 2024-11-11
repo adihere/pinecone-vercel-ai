@@ -2,7 +2,12 @@
 A modern web application for creating, validating, and managing Architecture Decision Records (ADRs) powered by AI.
 
 
-![adi-adr1](https://github.com/user-attachments/assets/f24048af-5896-401e-9fcd-1a4edd81a8ba)
+Create ADR 
+![adi-adr1](https://github.com/user-attachments/assets/497534f9-14fe-46d0-852b-5d66380f4d93)
+
+Validate ADR 
+![Uploading adi-adr2.gif…]()
+
 
 
 **Contents**
