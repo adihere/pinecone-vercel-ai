@@ -3,6 +3,7 @@ A modern web application for creating, validating, and managing Architecture Dec
 
 
 Create ADR 
+
 ![adi-adr1](https://github.com/user-attachments/assets/497534f9-14fe-46d0-852b-5d66380f4d93)
 
 
