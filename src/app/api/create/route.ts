@@ -34,7 +34,42 @@ export async function POST(req: Request) {
     const contextADR = await getContext(messageString, '');
     debugLog("CreateADR API - Context retrieved", contextADR);
 
-    const ADRTemplate = `# Title
+    const ADRExample = `EXAMPLE OF A WELL-FORMED ADR:
+
+    # Use PostgreSQL as the Primary Database
+
+    ## Status
+
+    Accepted
+
+    ## Context
+
+    Our application requires a robust, scalable database solution to handle complex queries and large datasets. We need to choose between various relational and non-relational database options.
+
+    ## Decision
+
+    We have decided to use PostgreSQL as our primary database system.
+
+    ## Consequences
+
+    Positive:
+    - PostgreSQL offers excellent performance for complex queries and large datasets.
+    - It provides strong data integrity and ACID compliance.
+    - PostgreSQL has a rich ecosystem of tools and extensions.
+    - It supports both relational and non-relational (JSON) data structures.
+
+    Negative:
+    - There may be a learning curve for team members not familiar with PostgreSQL.
+    - Horizontal scaling can be more challenging compared to some NoSQL alternatives.
+
+    ## References
+
+    - PostgreSQL official documentation: https://www.postgresql.org/docs/
+    - Comparison of SQL and NoSQL databases: [Link to relevant article]
+    `
+
+
+const ADRTemplate = `# Title
 [Short title of solved problem and solution]
 
 ## Status
@@ -49,6 +84,12 @@ export async function POST(req: Request) {
 ## Consequences
 [Description of the resulting context]
 
+## Assumptions
+[Clearly describe the underlying assumptions in the environment in which you are making the decision—cost, schedule, technology]
+
+##Related decisions:
+[Placeholder for links to related decision records]
+
 ## References
 [Optional list of references]`;
 
@@ -57,15 +98,21 @@ Given the following context and requirements, create a comprehensive ADR followi
 Ensure the ADR is clear, concise, and follows industry best practices.
 
 The ADR should:
-1. Clearly state the architectural decision
+1. Clearly state the architectural decision - the position you selected
 2. Provide sufficient context
 3. Explain the rationale behind the decision
 4. Detail the consequences (both positive and negative)
 5. Use professional and technical language
 6. Be structured according to the template
+7. Note the organisational constraints such as accepted technology standards, enterprise architecture, commonly employed patterns, and so on
+8. Argument: Outline why you selected a position, including items such as implementation effort, time to market, and required development resources
+
 
 TEMPLATE:
 ${ADRTemplate}
+
+EXAMPLE OF A WELL-FORMED ADR:
+${ADRExample}
 
 CONTEXT BLOCK:
 ${contextADR}
