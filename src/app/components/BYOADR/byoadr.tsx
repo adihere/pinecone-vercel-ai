@@ -15,6 +15,7 @@ interface PredictedQuestion {
 }
 
 const SplitViewADRForm: React.FC = () => {
+  const API_TIMEOUT = 45000; // 45 seconds in milliseconds
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -34,6 +35,24 @@ const SplitViewADRForm: React.FC = () => {
     }
   };
 
+  //################
+  const fetchWithTimeout = async (url: string, options: RequestInit, timeout: number = API_TIMEOUT) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      throw new Error('Request timed out - please try again');
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
@@ -45,8 +64,8 @@ const SplitViewADRForm: React.FC = () => {
     setChatHistory(prev => [...prev, newUserMessage]);
 
     try {
-      NProgress.start()
-      const response = await fetch('/api/create', {
+      NProgress.start();
+      const response = await fetchWithTimeout('/api/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,18 +91,19 @@ const SplitViewADRForm: React.FC = () => {
       
       // Fetch and update predicted questions
       await updatePredictedQuestions(inputText);
-      NProgress.done()
+      NProgress.done();
       
     } catch (error) {
       console.error('Error creating text:', error);
       await logDebugInfo(`Error creating text: ${error}`);
-      setResult('An error occurred during creation.');
+      setResult('An error occurred during creation. Please try again.');
+      NProgress.done();
     }
   };
 
   const updatePredictedQuestions = async (message: string) => {
     try {
-      const response = await fetch('/api/predict', {
+      const response = await fetchWithTimeout('/api/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,8 +119,10 @@ const SplitViewADRForm: React.FC = () => {
       );
     } catch (error) {
       console.error('Error fetching predicted questions:', error);
+      setPredictedQuestions([]);
     }
   };
+  //###############  
 
   const handlePredictedQuestionClick = (question: string) => {
     setInputText(" Update and refine the previously created  ADR Output based on the info provided here" + question);
