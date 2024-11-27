@@ -35,7 +35,7 @@ const SplitViewADRForm: React.FC = () => {
     }
   };
 
-  //################
+  
   const fetchWithTimeout = async (url: string, options: RequestInit, timeout: number = API_TIMEOUT) => {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
@@ -122,7 +122,7 @@ const SplitViewADRForm: React.FC = () => {
       setPredictedQuestions([]);
     }
   };
-  //###############  
+  
 
   const handlePredictedQuestionClick = (question: string) => {
     setInputText(" Update and refine the previously created  ADR Output based on the info provided here" + question);

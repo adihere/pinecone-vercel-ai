@@ -34,7 +34,58 @@ export async function POST(req: Request) {
     const contextADR = await getContext(messageString, '');
     debugLog("CreateADR API - Context retrieved", contextADR);
 
-    const ADRExample = `EXAMPLE OF A WELL-FORMED ADR:
+    const ADRExample = `### Examples ###
+    EXAMPLE 1 OF A WELL-FORMED ADR:
+        Architectural Decision Record: Software Development Lifecycle Approach for ABC Application
+    1. Decision
+    We will adopt an adapted version of the GitFlow workflow for the development of the ABC application.
+    2. Context
+    The ABC application is a packaged solution designed for deployment in customer environments via a deployment package. Our development process needs to support a controllable feature, hotfix, and release pipeline.
+    Key considerations:
+    Packaged solution deployment
+    Need for controllable feature development
+    Requirement for efficient hotfix management
+    Streamlined release process
+    3. Rationale
+    The adapted GitFlow workflow was chosen for the following reasons:
+    Simplified branching strategy: We've eliminated hotfix/* and release/* branches to reduce complexity and improve responsiveness to production issues.
+    Version control: The workflow enables effective management of release versioning for the ABC application.
+    Flexibility: The adapted approach allows for quick bug fixes in production releases without compromising stability.
+    Collaborative development: The use of protected branches and merge requests promotes code review and quality assurance.
+    4. Consequences
+    Positive
+    Improved control over release versioning
+    Enhanced collaboration through merge requests and code reviews
+    Simplified hotfix process for quicker response to production issues
+    Clear separation between ongoing development and stable releases
+    Negative
+    Increased complexity compared to trunk-based development or GitHub flow
+    Additional overhead in branch management and merging processes
+    5. Compliance
+    To ensure adherence to this decision, the following measures must be implemented:
+    Main and develop branches in each repository must be designated as protected.
+    Changes to main and develop branches must be made through merge requests.
+    A minimum of one approval is required for every merge request.
+    6. Branching Strategy
+    The adapted GitFlow workflow for ABC application consists of the following branches:
+    main: Protected branch for tagging releases
+    develop: Protected branch for ongoing development work
+    feature/*: Branches for developing new features
+    7. Organizational Constraints
+    This decision aligns with the following organizational standards and practices:
+    Accepted version control practices using Git
+    Enterprise architecture guidelines for software development lifecycle
+    Common branching patterns in software development
+    Emphasis on code review and quality assurance processes
+    8. Argument
+    The adapted GitFlow workflow was selected based on the following considerations:
+    Implementation effort: While more complex than simpler workflows, the benefits outweigh the initial setup and learning curve.
+    Time to market: The streamlined approach allows for quicker releases and hotfixes compared to the full GitFlow model.
+    Development resources: The workflow supports collaborative development and efficient code review processes, maximizing the effectiveness of our development team.
+    Scalability: As the project grows, this workflow can accommodate increasing complexity and team size.
+    By adopting this adapted GitFlow workflow, we strike a balance between structure and flexibility, enabling efficient development and release management for the ABC application.
+    
+    EXAMPLE 2 OF A WELL-FORMED ADR:
 
     # Use PostgreSQL as the Primary Database
 
@@ -93,10 +144,12 @@ const ADRTemplate = `# Title
 ## References
 [Optional list of references]`;
 
-    const systemPrompt = `You are an expert enterprise architect specializing in creating Architecture Decision Records (ADRs).
-Given the following context and requirements, create a comprehensive ADR following the template below. 
-Ensure the ADR is clear, concise, and follows industry best practices.
+    const systemPrompt = `### Instructions ### 
+You are an expert enterprise architect specializing in creating Architecture Decision Records (ADRs) and the output you create will be referred by stakeholders such as technology leaders , software engineers , solution architects , project managers and team leaders.
 
+Given the following context and requirements, create a comprehensive ADR following the template below. 
+### Style ###
+Ensure the ADR is clear, concise, and follows industry best practices.
 The ADR should:
 1. Clearly state the architectural decision - the position you selected
 2. Provide sufficient context
