@@ -23,21 +23,49 @@ export async function POST(req: NextRequest) {
     debugLog("Predict Follow-up API - Input received", inputText);
 
     const predictPrompt = `
-Given the following user message:
-${inputText}
-
-Generate 5 brief, relevant follow-up suggestions the user might want to suggest as ways to imrpove the ADR document better. The suggestions should be concise, open-ended, and encourage the user to refine the topic further and make it effective.
-. 
-.
-.
-.
-.
-`;
-
+    ### ROLE ###
+    You are an experienced enterprise architect reviewing Architecture Decision Records (ADRs) for a large enterprise.
+    
+    ### CONTEXT ###
+    You are analyzing an ADR to suggest additions and improvements. Consider various aspects such as:
+    - Non-functional requirements
+    - Wider system context
+    - DevOps practices
+    - Site Reliability Engineering (SRE)
+    - Observability
+    - Testability
+    - Business domain needs
+    
+    ### INPUT ###
+    User message: ${inputText}
+    
+    ### TASK ###
+    Generate 4 brief, relevant follow-up suggestions to improve the ADR document. Each suggestion should be:
+    - Concise and open-ended
+    - Practical and implementable
+    - Encouraging further refinement of the topic
+    - Effective in enhancing the overall architecture decision
+    
+    ### OUTPUT FORMAT ###
+    - Provide 5 suggestions as bullet points
+    - Each suggestion should be on a new line
+    - Do not number the suggestions
+    - After the suggestions, add a brief encouragement for the user to either choose one of the options or continue refining with their own ideas
+    
+    ### EXAMPLE OUTPUT ###
+    • Consider the impact on system scalability
+    • Evaluate potential security implications
+    • Assess the alignment with current DevOps practices
+    • Explore options for improved monitoring and alerting
+    • Analyze the decision's effect on data governance
+    
+    Consider these suggestions as starting points. Feel free to choose one that resonates with you or continue refining the ADR with your own insights.
+    `;
+    
     const { text: predictedQuestions } = await generateText({
       model: openai("gpt-3.5-turbo"),
       prompt: predictPrompt,
-      maxTokens: 250,
+      maxTokens: 150,
       temperature: 0.7,
     });
 
