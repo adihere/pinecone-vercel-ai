@@ -1,193 +1,151 @@
 "use client";
-import React, { useState } from 'react';
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-}
-
-interface PredictedQuestion {
-  question: string;
-  onClick: () => void;
-}
+import React, { useState, useCallback, useMemo } from 'react';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 const SplitViewADRForm: React.FC = () => {
-  const API_TIMEOUT = 45000; // 45 seconds in milliseconds
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [predictedQuestions, setPredictedQuestions] = useState<PredictedQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [predictedQuestions, setPredictedQuestions] = useState<string[]>([]);
 
-  const logDebugInfo = async (info: string) => {
+  // Memoized and debounced message send handler
+  const handleSendMessage = useCallback(async (customText?: string) => {
+    const textToSend = customText || inputText;
+    if (!textToSend.trim()) return;
+
+    setIsLoading(true);
+    setError(null);
+    NProgress.start();
+
     try {
-      await fetch('/api/log-debug', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 45000);
+
+      const response = await fetch('/api/create', {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ info }),
+        body: JSON.stringify({ 
+          text: textToSend,
+          timestamp: new Date().toISOString() 
+        }),
       });
-    } catch (error) {
-      console.error('Error sending debug info:', error);
-    }
-  };
 
-  
-  const fetchWithTimeout = async (url: string, options: RequestInit, timeout: number = API_TIMEOUT) => {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
+      clearTimeout(timeoutId);
 
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal
-      });
-      clearTimeout(id);
-      return response;
-    } catch (error) {
-      clearTimeout(id);
-      throw new Error('Request timed out - please try again');
-    }
-  };
+      if (!response.ok) {
+        throw new Error('Failed to generate ADR');
+      }
 
-  const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
-
-    const newUserMessage: ChatMessage = {
-      role: 'user',
-      content: inputText,
-      timestamp: new Date().toLocaleTimeString(),
-    };
-    setChatHistory(prev => [...prev, newUserMessage]);
-
-    try {
-      NProgress.start();
-      const response = await fetchWithTimeout('/api/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: inputText }),
-      });
-      
-      console.log('Response status:', response.status);
-      await logDebugInfo(`Response status: ${response.status}`);
-      
       const data = await response.json();
-      await logDebugInfo(`Response data: ${JSON.stringify(data)}`);
-      
-      const assistantMessage: ChatMessage = {
-        role: 'assistant',
-        content: data.result,
-        timestamp: new Date().toLocaleTimeString(),
-      };
-      setChatHistory(prev => [...prev, assistantMessage]);
-      
       setResult(data.result);
       setInputText('');
       
-      // Fetch and update predicted questions
-      await updatePredictedQuestions(inputText);
-      NProgress.done();
-      
+      // Predictive question generation
+      await updatePredictedQuestions(textToSend);
+
     } catch (error) {
-      console.error('Error creating text:', error);
-      await logDebugInfo(`Error creating text: ${error}`);
-      setResult('An error occurred during creation. Please try again.');
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'An unexpected error occurred';
+      
+      setError(errorMessage);
+      console.error('ADR Generation Error:', error);
+    } finally {
+      setIsLoading(false);
       NProgress.done();
     }
-  };
+  }, [inputText]);
 
-  const updatePredictedQuestions = async (message: string) => {
+  // Optimize predicted questions generation
+  const updatePredictedQuestions = useCallback(async (message: string) => {
     try {
-      const response = await fetchWithTimeout('/api/predict', {
+      const response = await fetch('/api/predict', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: message }),
       });
+
       const data = await response.json();
-      setPredictedQuestions(
-        data.questions.map((q: string) => ({
-          question: q,
-          onClick: () => handlePredictedQuestionClick(q),
-        }))
-      );
+      setPredictedQuestions(data.questions || []);
     } catch (error) {
-      console.error('Error fetching predicted questions:', error);
+      console.error('Predicted Questions Error:', error);
       setPredictedQuestions([]);
     }
-  };
-  
+  }, []);
 
-  const handlePredictedQuestionClick = (question: string) => {
-    setInputText(" Update and refine the previously created  ADR Output based on the info provided here" + question);
-    handleSendMessage();
-  };
+  // Accessibility and keyboard support
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }, [handleSendMessage]);
+
+  // Performance optimization: Memoize expensive rendering
+  const renderResult = useMemo(() => {
+    if (isLoading) return <div className="shimmer text-white p-4">Generating ADR...</div>;
+    if (error) return <div className="text-red-500 p-4">{error}</div>;
+    return result ? (
+      <pre className="text-white whitespace-pre-wrap">{result}</pre>
+    ) : (
+      <div className="text-gray-400 italic">The generated ADR will appear here...</div>
+    );
+  }, [result, isLoading, error]);
 
   return (
-    <div className="flex h-[calc(100vh-200px)] gap-4">
+    <div className="flex h-[calc(100vh-200px)] gap-4 motion-safe:animate-fade-in">
       {/* Left side - Chat Interface */}
       <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4">
         {/* Predicted Questions */}
         <div className="mb-4">
-          <h3 className="text-lg font-medium text-white mb-2"> Start with a simple english description of your ADR and iterate away !</h3>
+          <h3 className="text-lg font-medium text-white mb-2">
+            Suggested Next Steps
+          </h3>
           <div className="space-y-2">
-            {predictedQuestions.map((q, index) => (
+            {predictedQuestions.map((question, index) => (
               <button
                 key={index}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full text-left"
-                onClick={q.onClick}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full text-left transition-colors"
+                onClick={() => {
+                  setInputText(question);
+                  handleSendMessage(question);
+                }}
               >
-                {q.question}
+                {question}
               </button>
             ))}
           </div>
         </div>
-
-        {/* Chat History */}
-        <div className="flex-grow overflow-y-auto mb-4 space-y-4">
-          {chatHistory.map((message, index) => (
-            <div
-              key={index}
-              className={`p-3 rounded-lg ${
-                message.role === 'user'
-                  ? 'bg-blue-600 ml-auto max-w-[80%]'
-                  : 'bg-gray-700 max-w-[80%]'
-              }`}
-            >
-              <div className="text-sm text-gray-300 mb-1">
-                {message.role === 'user' ? 'You' : 'Assistant'} • {message.timestamp}
-              </div>
-              
-            </div>
-          ))}
-        </div>
         
-        {/* Input Area */}
-        <div className="flex gap-2">
+        {/* Input Area with Enhanced Accessibility */}
+        <div className="flex gap-2 mt-4">
           <textarea
-            className="flex-grow p-2 bg-gray-700 text-white rounded-lg resize-none"
+            aria-label="ADR Description Input"
+            className="flex-grow p-2 bg-gray-700 text-white rounded-lg resize-none focus:ring-2 focus:ring-blue-500 transition-all"
             rows={3}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Type your message here..."
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Describe your architectural decision in simple terms..."
+            disabled={isLoading}
+            aria-describedby="input-help"
           />
           <button
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg self-end"
-            onClick={handleSendMessage}
+            className={`px-4 py-2 rounded-lg self-end transition-colors ${
+              isLoading 
+                ? 'bg-gray-500 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+            onClick={() => handleSendMessage()}
+            disabled={isLoading}
+            aria-busy={isLoading}
           >
-            Send
+            {isLoading ? 'Generating...' : 'Generate ADR'}
           </button>
         </div>
       </div>
@@ -196,19 +154,11 @@ const SplitViewADRForm: React.FC = () => {
       <div className="w-1/2 bg-gray-900 rounded-lg p-4">
         <h2 className="text-xl font-bold mb-4 text-white">Generated ADR</h2>
         <div className="h-[90%] bg-gray-700 rounded-lg p-4 overflow-y-auto">
-          {result ? (
-            <pre className="text-white whitespace-pre-wrap">{result}</pre>
-          ) : (
-            <div className="text-gray-400 italic">
-              The generated ADR will appear here...
-            </div>
-          )}
+          {renderResult}
         </div>
       </div>
     </div>
   );
-
-
 };
 
 export default SplitViewADRForm;
