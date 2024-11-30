@@ -6,6 +6,7 @@ import 'nprogress/nprogress.css';
 const SplitViewADRForm: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [predictedQuestions, setPredictedQuestions] = useState<string[]>([]);
@@ -44,6 +45,7 @@ const SplitViewADRForm: React.FC = () => {
       const data = await response.json();
       setResult(data.result);
       setInputText('');
+      setChatHistory((prev) => [...prev, textToSend]);
       
       // Predictive question generation
       await updatePredictedQuestions(textToSend);
@@ -101,6 +103,18 @@ const SplitViewADRForm: React.FC = () => {
     <div className="flex h-[calc(100vh-200px)] gap-4 motion-safe:animate-fade-in">
       {/* Left side - Chat Interface */}
       <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4">
+        {/* Chat History */}
+        <div className="mb-4 flex-grow overflow-y-auto space-y-4">
+          {chatHistory.map((message, index) => (
+            <div
+              key={index}
+              className="bg-blue-600 rounded-lg p-3 self-end max-w-[80%] text-white"
+            >
+              {message}
+            </div>
+          ))}
+        </div>
+
         {/* Predicted Questions */}
         <div className="mb-4">
           <h3 className="text-lg font-medium text-white mb-2">
@@ -121,7 +135,7 @@ const SplitViewADRForm: React.FC = () => {
             ))}
           </div>
         </div>
-        
+
         {/* Input Area with Enhanced Accessibility */}
         <div className="flex gap-2 mt-4">
           <textarea
