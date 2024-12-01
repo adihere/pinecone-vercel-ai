@@ -118,3 +118,23 @@
     transform: translateY(0.5rem);
   }
 }
+
+
+/* Your custom tooltip styles */
+.tooltip {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  color: #90EE90; /* Light green color */
+}
+
+.tooltip-right {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  margin-left: 5px;
+}
+
+.radio-label {
+  color: #e0e0e0;
+}

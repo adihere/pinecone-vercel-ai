@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import NProgress from 'nprogress';
 //import 'nprogress/nprogress.css';
-
+import '../../../global.css';
 
 // Define ADR type options
 const ADR_TYPES = {
@@ -131,7 +131,7 @@ const SplitViewADRForm: React.FC = () => {
         {Object.values(ADR_TYPES).map((type) => (
           <label
             key={type}
-            className="flex items-center space-x-2 cursor-pointer relative"
+            className="flex items-center space-x-2 cursor-pointer relative radio-label"
             onMouseEnter={() => setHoveredADRType(type)}
             onMouseLeave={() => setHoveredADRType(null)}
           >
@@ -145,7 +145,7 @@ const SplitViewADRForm: React.FC = () => {
             <span>{type}</span>
             {/* Tooltip */}
             {hoveredADRType === type && (
-              <div className="absolute z-10 p-2 bg-gray-800 text-white text-sm rounded shadow-lg left-full ml-2 top-1/2 transform -translate-y-1/2 w-64">
+              <div className="tooltip absolute z-10 p-2 bg-gray-800 text-white text-sm rounded shadow-lg left-full ml-2 top-1/2 transform -translate-y-1/2 w-64">
                 {ADR_TYPE_TOOLTIPS[type]}
               </div>
             )}

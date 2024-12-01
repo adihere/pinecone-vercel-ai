@@ -8,6 +8,7 @@ import { useChat } from "ai/react";
 import InstructionModal from "./components/InstructionModal";
 import { AiFillGithub, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from 'next/link';
+import '../global.css';
 
 const Page: React.FC = () => {
   const [gotMessages, setGotMessages] = useState(false);
