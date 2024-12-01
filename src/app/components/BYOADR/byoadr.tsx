@@ -3,6 +3,24 @@ import React, { useState, useCallback, useMemo } from 'react';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
+// Define ADR type options
+const ADR_TYPES = {
+  BUSINESS: 'Business-Oriented ADRs',
+  TECHNOLOGY: 'Technology-Focused ADRs',
+  COMMUNICATION: 'Communication-Centric ADRs',
+  PROCESS: 'Process-Oriented ADRs',
+  SECURITY: 'Security and Compliance ADRs'
+};
+
+// Define tooltips for each ADR type
+const ADR_TYPE_TOOLTIPS = {
+  [ADR_TYPES.BUSINESS]: 'Business-oriented ADRs are particularly useful for communicating architectural decisions to stakeholders, executives, and non-technical team members',
+  [ADR_TYPES.TECHNOLOGY]: 'Technology-focused ADRs are primarily aimed at development teams and technical architects, providing detailed rationales for technical decisions',
+  [ADR_TYPES.COMMUNICATION]: 'Communication-centric ADRs help bridge the gap between technical and non-technical team members, fostering better understanding and collaboration across the organization',
+  [ADR_TYPES.PROCESS]: 'Process-oriented ADRs help maintain consistency in development practices and improve overall project efficiency',
+  [ADR_TYPES.SECURITY]: 'Security and compliance ADRs are crucial for ensuring that architectural decisions align with security requirements and legal obligations'
+};
+
 const SplitViewADRForm: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<string | null>(null);
@@ -63,13 +81,19 @@ const SplitViewADRForm: React.FC = () => {
     }
   }, [inputText]);
 
+
+  // New state for ADR type selection
+  const [selectedADRType, setSelectedADRType] = useState<string>(ADR_TYPES.TECHNOLOGY);
+  const [hoveredADRType, setHoveredADRType] = useState<string | null>(null);
+
   // Optimize predicted questions generation
   const updatePredictedQuestions = useCallback(async (message: string) => {
     try {
       const response = await fetch('/api/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: message }),
+        body: JSON.stringify({ 
+          text: message, adrType: selectedADRType}),
       });
 
       const data = await response.json();
@@ -78,7 +102,7 @@ const SplitViewADRForm: React.FC = () => {
       console.error('Predicted Questions Error:', error);
       setPredictedQuestions([]);
     }
-  }, []);
+  }, [selectedADRType]);
 
   // Accessibility and keyboard support
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -100,9 +124,37 @@ const SplitViewADRForm: React.FC = () => {
   }, [result, isLoading, error]);
 
   return (
-    <div className="flex h-[calc(100vh-200px)] gap-4 motion-safe:animate-fade-in">
+      <div className="flex h-[calc(100vh-200px)] gap-4 motion-safe:animate-fade-in">
+        {/* ADR Type Selection Row */}
+        <div className="flex flex-col space-y-2 relative">
+        {Object.values(ADR_TYPES).map((type) => (
+          <label
+            key={type}
+            className="flex items-center space-x-2 cursor-pointer relative"
+            onMouseEnter={() => setHoveredADRType(type)}
+            onMouseLeave={() => setHoveredADRType(null)}
+          >
+            <input
+              type="radio"
+              value={type}
+              checked={selectedADRType === type}
+              onChange={() => setSelectedADRType(type)}
+              className="form-radio text-blue-600 h-5 w-5"
+            />
+            <span>{type}</span>
+            {/* Tooltip */}
+            {hoveredADRType === type && (
+              <div className="absolute z-10 p-2 bg-gray-800 text-white text-sm rounded shadow-lg left-full ml-2 top-1/2 transform -translate-y-1/2 w-64">
+                {ADR_TYPE_TOOLTIPS[type]}
+              </div>
+            )}
+          </label>
+        ))}
+      </div>
+
+
       {/* Left side - Chat Interface */}
-      <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4">
+      <div className="flex flex-col w-1/2 bg-gray-900 rounded-lg p-4 mt-12">
         {/* Chat History */}
         <div className="mb-4 flex-grow overflow-y-auto space-y-4">
           {chatHistory.map((message, index) => (

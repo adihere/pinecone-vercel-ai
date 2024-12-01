@@ -110,3 +110,11 @@
 #nprogress .spinner {
   display: none;
 }
+
+@media (max-width: 768px) {
+  .tooltip {
+    left: 0;
+    top: 100%;
+    transform: translateY(0.5rem);
+  }
+}

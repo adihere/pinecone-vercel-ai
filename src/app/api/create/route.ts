@@ -6,8 +6,66 @@ import { openai } from '@ai-sdk/openai';
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge';
-
 const DEBUG = true;
+
+// Define a type for the ADR Types
+const ADR_TYPES = [
+  'Business-Oriented ADRs', 
+  'Technology-Focused ADRs', 
+  'Communication-Centric ADRs', 
+  'Process-Oriented ADRs', 
+  'Security and Compliance ADRs'
+] as const;
+
+type ADRType = typeof ADR_TYPES[number];
+
+// Define context prompts for each ADR type
+const ADR_TYPE_CONTEXTS: Record<ADRType, string> = {
+  'Business-Oriented ADRs': `
+Context for Business-Oriented ADRs:
+- Focus on decisions that significantly impact business goals and strategies
+- Emphasize strategic alignment with company objectives
+- Provide clear cost-benefit analysis
+- Highlight compliance with industry regulations
+- Demonstrate potential impact on customer experience and satisfaction
+  `,
+  'Technology-Focused ADRs': `
+Context for Technology-Focused ADRs:
+- Detailed technical rationale for architectural choices
+- In-depth analysis of technical trade-offs
+- Comprehensive evaluation of technology stack components
+- Performance, scalability, and maintainability considerations
+- Technical constraints and opportunities
+  `,
+  'Communication-Centric ADRs': `
+Context for Communication-Centric ADRs:
+- Clear, jargon-free language for diverse stakeholders
+- High-level overview of technical decisions
+- Emphasis on translating technical choices into business value
+- Visual representations of architectural concepts
+- Bridging communication gaps between technical and non-technical teams
+  `,
+  'Process-Oriented ADRs': `
+Context for Process-Oriented ADRs:
+- Focus on development methodologies and practices
+- Rationale for workflow and process improvements
+- Impact on team productivity and efficiency
+- Alignment with organizational development standards
+- Long-term benefits of proposed process changes
+  `,
+  'Security and Compliance ADRs': `
+Context for Security and Compliance ADRs:
+- Detailed security risk assessment
+- Comprehensive compliance strategy
+- Explanation of security mechanisms and protocols
+- Alignment with legal and regulatory requirements
+- Mitigation strategies for potential security vulnerabilities
+  `
+};
+
+function isValidADRType(type: string): type is ADRType {
+  return (ADR_TYPES as readonly string[]).includes(type);
+}
 
 function textToJSON(text: string) {
   return { result: text }; // Changed from 'text' to 'result' to match the frontend expectations
@@ -24,103 +82,26 @@ function debugLog(message: string, data: any = null) {
 
 export async function POST(req: Request) {
   try {
-    const { text: inputText } = await req.json();
-    debugLog("CreateADR API - Input received", inputText);
+    const requestBody = await req.json();
+    
+    // Validate and set ADR type with type guard
+    const adrType: ADRType = requestBody.adrType && isValidADRType(requestBody.adrType) 
+      ? requestBody.adrType 
+      : 'Technology-Focused ADRs';
 
+    const inputText = requestBody.text;
     let messageString: string;
     messageString = typeof inputText === 'string' ? inputText : JSON.stringify(inputText);
 
     // Get the context from the input
     const contextADR = await getContext(messageString, '');
-    debugLog("CreateADR API - Context retrieved", contextADR);
+    console.log("CreateADR API - Context retrieved", contextADR);
 
-    const ADRExample = `### Examples ###
-    EXAMPLE 1 OF A WELL-FORMED ADR:
-        Architectural Decision Record: Software Development Lifecycle Approach for ABC Application
-    1. Decision
-    We will adopt an adapted version of the GitFlow workflow for the development of the ABC application.
-    2. Context
-    The ABC application is a packaged solution designed for deployment in customer environments via a deployment package. Our development process needs to support a controllable feature, hotfix, and release pipeline.
-    Key considerations:
-    Packaged solution deployment
-    Need for controllable feature development
-    Requirement for efficient hotfix management
-    Streamlined release process
-    3. Rationale
-    The adapted GitFlow workflow was chosen for the following reasons:
-    Simplified branching strategy: We've eliminated hotfix/* and release/* branches to reduce complexity and improve responsiveness to production issues.
-    Version control: The workflow enables effective management of release versioning for the ABC application.
-    Flexibility: The adapted approach allows for quick bug fixes in production releases without compromising stability.
-    Collaborative development: The use of protected branches and merge requests promotes code review and quality assurance.
-    4. Consequences
-    Positive
-    Improved control over release versioning
-    Enhanced collaboration through merge requests and code reviews
-    Simplified hotfix process for quicker response to production issues
-    Clear separation between ongoing development and stable releases
-    Negative
-    Increased complexity compared to trunk-based development or GitHub flow
-    Additional overhead in branch management and merging processes
-    5. Compliance
-    To ensure adherence to this decision, the following measures must be implemented:
-    Main and develop branches in each repository must be designated as protected.
-    Changes to main and develop branches must be made through merge requests.
-    A minimum of one approval is required for every merge request.
-    6. Branching Strategy
-    The adapted GitFlow workflow for ABC application consists of the following branches:
-    main: Protected branch for tagging releases
-    develop: Protected branch for ongoing development work
-    feature/*: Branches for developing new features
-    7. Organizational Constraints
-    This decision aligns with the following organizational standards and practices:
-    Accepted version control practices using Git
-    Enterprise architecture guidelines for software development lifecycle
-    Common branching patterns in software development
-    Emphasis on code review and quality assurance processes
-    8. Argument
-    The adapted GitFlow workflow was selected based on the following considerations:
-    Implementation effort: While more complex than simpler workflows, the benefits outweigh the initial setup and learning curve.
-    Time to market: The streamlined approach allows for quicker releases and hotfixes compared to the full GitFlow model.
-    Development resources: The workflow supports collaborative development and efficient code review processes, maximizing the effectiveness of our development team.
-    Scalability: As the project grows, this workflow can accommodate increasing complexity and team size.
-    By adopting this adapted GitFlow workflow, we strike a balance between structure and flexibility, enabling efficient development and release management for the ABC application.
-    
-    EXAMPLE 2 OF A WELL-FORMED ADR:
+    // Use the specific context for the selected ADR type
+    const typeSpecificContext = ADR_TYPE_CONTEXTS[adrType];
 
-    # Use PostgreSQL as the Primary Database
-
-    ## Status
-
-    Accepted
-
-    ## Context
-
-    Our application requires a robust, scalable database solution to handle complex queries and large datasets. We need to choose between various relational and non-relational database options.
-
-    ## Decision
-
-    We have decided to use PostgreSQL as our primary database system.
-
-    ## Consequences
-
-    Positive:
-    - PostgreSQL offers excellent performance for complex queries and large datasets.
-    - It provides strong data integrity and ACID compliance.
-    - PostgreSQL has a rich ecosystem of tools and extensions.
-    - It supports both relational and non-relational (JSON) data structures.
-
-    Negative:
-    - There may be a learning curve for team members not familiar with PostgreSQL.
-    - Horizontal scaling can be more challenging compared to some NoSQL alternatives.
-
-    ## References
-
-    - PostgreSQL official documentation: https://www.postgresql.org/docs/
-    - Comparison of SQL and NoSQL databases: [Link to relevant article]
-    `
-
-
-const ADRTemplate = `# Title
+    // Rest of the original implementation remains the same...
+    const ADRTemplate = `# Title
 [Short title of solved problem and solution]
 
 ## Status
@@ -145,27 +126,23 @@ const ADRTemplate = `# Title
 [Optional list of references]`;
 
     const systemPrompt = `### Instructions ### 
-You are an expert enterprise architect specializing in creating Architecture Decision Records (ADRs) and the output you create will be referred by stakeholders such as technology leaders , software engineers , solution architects , project managers and team leaders.
+You are an expert enterprise architect specializing in creating Architecture Decision Records (ADRs) with a focus on ${adrType}.
 
 Given the following context and requirements, create a comprehensive ADR following the template below. 
 ### Style ###
 Ensure the ADR is clear, concise, and follows industry best practices.
 The ADR should:
 1. Clearly state the architectural decision - the position you selected
-2. Provide sufficient context
+2. Provide sufficient context specifically tailored to ${adrType}
 3. Explain the rationale behind the decision
 4. Detail the consequences (both positive and negative)
-5. Use professional and technical language
+5. Use professional and technical language appropriate to ${adrType}
 6. Be structured according to the template
-7. Note the organisational constraints such as accepted technology standards, enterprise architecture, commonly employed patterns, and so on
+7. Note the organisational constraints relevant to ${adrType}
 8. Argument: Outline why you selected a position, including items such as implementation effort, time to market, and required development resources
-
 
 TEMPLATE:
 ${ADRTemplate}
-
-EXAMPLE OF A WELL-FORMED ADR:
-${ADRExample}
 
 CONTEXT BLOCK:
 ${contextADR}
