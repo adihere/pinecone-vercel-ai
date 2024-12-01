@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useCallback, useMemo } from 'react';
 import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
+//import 'nprogress/nprogress.css';
+
 
 // Define ADR type options
 const ADR_TYPES = {
